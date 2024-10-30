@@ -22,14 +22,21 @@ document
             }
         )
             .then((response) => {
-                console.log("Response status:", response.status);
-                return response.text();
-            })
-            .then((data) => {
-                console.log("Response data:", data);
-                alert(data); // Mostra a resposta do servidor
+                if (response.ok) {
+                    console.log(
+                        "Login bem-sucedido, redirecionando para index.html"
+                    );
+                    // Armazena o email do usuário no localStorage
+                    localStorage.setItem("userEmail", email);
+                    window.location.href = "index.html"; // Redireciona para a página inicial após login bem-sucedido
+                } else {
+                    return response.text().then((text) => {
+                        throw new Error(text);
+                    });
+                }
             })
             .catch((error) => {
                 console.error("Error:", error);
+                alert("Erro ao fazer login: " + error.message);
             });
     });

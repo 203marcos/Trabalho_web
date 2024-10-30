@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Página Inicial</title>
+        <link rel="stylesheet" href="styles3.css" />
+        <!-- Link para o arquivo CSS -->
+    </head>
+    <body>
+        <div class="header">
+            <a href="#" class="home-btn">HOME</a>
+        </div>
+        <div class="container">
+            <h1>Bem-vindo, <span id="user-email"></span>!</h1>
+            <p>Escolha uma opção abaixo:</p>
+            <div class="button-group">
+                <a href="Cadastro/cadastro.html" class="button">Cadastro</a>
+                <a href="Login/login.html" class="button">Login</a>
+            </div>
+        </div>
+        <script>
+            // Script para exibir o email do usuário logado
+            document.addEventListener("DOMContentLoaded", function () {
+                const userEmail = localStorage.getItem("userEmail");
+                console.log("Email do usuário logado:", userEmail);
+                if (userEmail) {
+                    document.getElementById("user-email").textContent =
+                        userEmail;
+                }
+            });
+        </script>
+    </body>
+</html>

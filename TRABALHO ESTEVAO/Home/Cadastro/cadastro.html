@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Página de Cadastro</title>
+        <link rel="stylesheet" href="../styles2.css" />
+        <!-- Link para o arquivo CSS -->
+    </head>
+    <body>
+        <div class="header">
+            <a href="../index.html" class="home-btn">HOME</a>
+        </div>
+        <div class="container">
+            <h1>Cadastro</h1>
+            <p>Por favor, preencha este formulário para criar uma conta.</p>
+            <form id="registrationForm">
+                <!-- Página de ação para o envio do formulário -->
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        placeholder="Digite seu email"
+                        name="email"
+                        id="email"
+                        required
+                    />
+                </div>
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input
+                        type="password"
+                        placeholder="Digite sua senha"
+                        name="password"
+                        id="password"
+                        required
+                    />
+                </div>
+                <div class="input-group">
+                    <button type="submit" class="registerbtn">Registrar</button>
+                </div>
+            </form>
+            <div class="container signin">
+                <p>
+                    Já tem uma conta?
+                    <a href="../Login/login.html">Faça login</a>.
+                </p>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
