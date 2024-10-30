@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Passeio Bugado</title>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <link rel="stylesheet" href="styles.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        />
+    </head>
+    <body>
+        <header class="bg-warning py-3">
+            <nav class="container">
+                <ul class="nav justify-content-center flex-nowrap">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#">Reservas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#">Passeios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#">Sobre</a>
+                    </li>
+                </ul>
+            </nav>
+            <h1 class="text-center mt-2">Passeio Bugado</h1>
+            <!-- Mover o título aqui -->
+        </header>
+
+        <main class="container my-5">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <img
+                        src="https://img.freepik.com/fotos-gratis/vista-do-adoravel-gato-domestico-persa_23-2151773924.jpg"
+                        class="img-fluid mb-3"
+                        alt="Imagem 1"
+                    />
+                </div>
+                <div class="col-md-6 d-flex flex-column justify-content-center">
+                    <h2>Descrição do Passeio 1</h2>
+                    <p>
+                        Descubra os melhores passeios em nossa região.
+                        Experiências únicas e inesquecíveis esperam por você!
+                    </p>
+                    <button class="btn btn-primary" onclick="conhecer()">
+                        Conhecer
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <img
+                        src="https://cloudfront-us-east-1.images.arcpublishing.com/newr7/AJJNCSONXRPMXFGBEEPB7RVCHM.jpg"
+                        class="img-fluid mb-3"
+                        alt="Imagem 2"
+                    />
+                </div>
+                <div class="col-md-6 d-flex flex-column justify-content-center">
+                    <h2>Descrição do Passeio 2</h2>
+                    <p>
+                        Explore novas aventuras e crie memórias inesquecíveis
+                        com nossos passeios incríveis!
+                    </p>
+                    <button class="btn btn-primary" onclick="conhecer()">
+                        Conhecer
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-dark text-white py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Contatos</h3>
+                        <p>Entre em contato: #######</p>
+                        <a href="#" class="text-white"
+                            ><i class="fab fa-facebook-square"></i> Facebook</a
+                        ><br />
+                        <a href="#" class="text-white"
+                            ><i class="fab fa-instagram"></i> Instagram</a
+                        ><br />
+                        <a href="#" class="text-white"
+                            ><i class="fab fa-twitter"></i> X (Twitter)</a
+                        >
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Acesso Rápido</h3>
+                        <ul class="list-unstyled">
+                            <li><a class="text-white" href="#">Home</a></li>
+                            <li><a class="text-white" href="#">Reservas</a></li>
+                            <li><a class="text-white" href="#">Passeios</a></li>
+                            <li><a class="text-white" href="#">Sobre</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-center mt-4">
+                    © 2024 Passeio Bugado. Todos os direitos reservados
+                </p>
+            </div>
+        </footer>
+
+        <script>
+            function conhecer() {
+                alert("Você clicou em 'Conhecer'!");
+            }
+        </script>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
+</html>

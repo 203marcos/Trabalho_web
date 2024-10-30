@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    color: #ff7f30; /* Laranja */
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Efeitos no menu de navegação */
+.nav-link {
+    transition: background-color 0.3s, color 0.3s;
+    font-size: 20px; /* Ajuste o valor conforme necessário */
+    padding: 0.5rem 1rem; /* Ajuste os valores de padding aqui */
+}
+
+.nav-link:hover {
+    background-color: rgba(
+        255,
+        255,
+        255,
+        0.2
+    ); /* Sombreado ao passar o mouse */
+    color: #fff; /* Muda a cor do texto */
+}
+
+/* Efeito de sombra nas imagens */
+.img-fluid {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.img-fluid:hover {
+    transform: scale(1.05); /* Aumenta a imagem levemente */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Adiciona sombra ao passar o mouse */
+}
+
+/* Estilização do botão */
+.btn-primary {
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Cor mais escura ao passar o mouse */
+    transform: scale(1.05); /* Aumenta o botão levemente */
+}
+
+/* Efeitos no rodapé */
+footer {
+    transition: background-color 0.3s;
+}
+
+footer:hover {
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.8
+    ); /* Escurece o rodapé ao passar o mouse */
+}
+
+@media (max-width: 576px) {
+    .nav {
+        overflow-x: auto; /* Permite rolagem horizontal */
+        white-space: nowrap; /* Impede que os itens quebrem para a linha seguinte */
+        padding: 2px; /* Diminui o padding */
+        margin: 0; /* Remove qualquer margem */
+    }
+
+    .nav-item {
+        padding: 0 10px !important; /* Ajuste o padding dos itens de navegação com maior especificidade */
+    }
+
+    .nav-link {
+        padding: 0 !important; /* Remove o padding padrão dos links de navegação */
+    }
+}
+
+h1 {
+    text-align: center;
+    margin-top: 10px; /* Ajuste a margem superior conforme necessário */
+    margin-bottom: 10px; /* Ajuste a margem inferior conforme necessário */
+}
