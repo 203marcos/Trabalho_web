@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <title>Cadastrar Usuário</title>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h2 class="text-center">Cadastrar Usuário</h2>
+            <form id="formCadastro">
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="nome"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="email"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="senha"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="role">Papel</label>
+                    <select class="form-control" id="role" required>
+                        <option value="user">Usuário</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    Cadastrar
+                </button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="index.html" class="btn btn-link">Voltar para o Home</a>
+            </div>
+        </div>
+
+        <script>
+            document
+                .getElementById("formCadastro")
+                .addEventListener("submit", async function (event) {
+                    event.preventDefault(); // Impede o envio padrão do formulário
+
+                    const nome = document.getElementById("nome").value;
+                    const email = document.getElementById("email").value;
+                    const senha = document.getElementById("senha").value;
+                    const role = document.getElementById("role").value; // Obtém o papel selecionado
+
+                    const usuario = { nome, email, senha, role }; // Inclui o papel no objeto
+
+                    try {
+                        const usuarioLogado = JSON.parse(
+                            localStorage.getItem("usuario")
+                        );
+                        const headers = {
+                            "Content-Type": "application/json",
+                        };
+
+                        // Adiciona o token de autenticação se o usuário estiver logado
+                        if (usuarioLogado && usuarioLogado.token) {
+                            headers.Authorization = `Bearer ${usuarioLogado.token}`;
+                        }
+
+                        const response = await fetch(
+                            "http://localhost:3000/usuarios",
+                            {
+                                method: "POST",
+                                headers: headers,
+                                body: JSON.stringify(usuario),
+                            }
+                        );
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            alert(data.message); // Mostra a mensagem de sucesso
+                            document.getElementById("formCadastro").reset(); // Limpa o formulário
+                        } else {
+                            alert(data.error); // Mostra a mensagem de erro
+                        }
+                    } catch (error) {
+                        console.error("Erro:", error);
+                        alert("Erro ao cadastrar usuário.");
+                    }
+                });
+        </script>
+    </body>
+</html>
