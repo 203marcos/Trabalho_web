@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <title>Adicionar Produto</title>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h2 class="text-center">Adicionar Produto</h2>
+            <form id="formProduto">
+                <div class="form-group">
+                    <label for="nomeProduto">Nome do Produto</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="nomeProduto"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="descricaoProduto">Descrição do Produto</label>
+                    <textarea
+                        class="form-control"
+                        id="descricaoProduto"
+                        required
+                    ></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="precoProduto">Preço do Produto</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        id="precoProduto"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="imagemProduto">URL da Imagem do Produto</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="imagemProduto"
+                        required
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    Adicionar Produto
+                </button>
+            </form>
+            <div class="text-center mt-4">
+                <a href="../admin.html" class="btn btn-secondary"
+                    >Voltar para o admin</a
+                >
+            </div>
+        </div>
+
+        <script>
+            // Verifica se o usuário está autenticado e se é um administrador
+            const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+            if (!usuario || usuario.role !== "admin") {
+                // Se não for admin, redireciona para a página inicial
+                window.location.href = "../index.html";
+            }
+
+            document
+                .getElementById("formProduto")
+                .addEventListener("submit", async function (event) {
+                    event.preventDefault(); // Impede o envio padrão do formulário
+
+                    const nome = document.getElementById("nomeProduto").value;
+                    const descricao =
+                        document.getElementById("descricaoProduto").value;
+                    const preco = document.getElementById("precoProduto").value;
+                    const imagem =
+                        document.getElementById("imagemProduto").value;
+
+                    const produto = { nome, descricao, preco, imagem };
+
+                    try {
+                        const response = await fetch(
+                            "http://localhost:3000/api/produtos",
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${usuario.token}`, // Adicione o token do usuário
+                                },
+                                body: JSON.stringify(produto),
+                            }
+                        );
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            alert("Produto adicionado com sucesso!");
+                            document.getElementById("formProduto").reset(); // Limpa o formulário
+                        } else {
+                            alert(data.error); // Mostra a mensagem de erro
+                        }
+                    } catch (error) {
+                        console.error("Erro:", error);
+                        alert("Erro ao adicionar produto.");
+                    }
+                });
+        </script>
+    </body>
+</html>

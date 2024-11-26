@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <title>Reserva de Viagem</title>
+        <style>
+            .container {
+                margin-top: 50px;
+            }
+            .img-container {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .img-container img {
+                max-width: 100%;
+                height: auto;
+                object-fit: cover;
+            }
+            .btn-back {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <a href="index.html" class="btn btn-secondary btn-back">Voltar</a>
+            <h1 class="text-center">Reserva de Viagem</h1>
+            <div class="img-container">
+                <img id="viagemImagem" alt="Imagem da Viagem" />
+            </div>
+            <div class="text-center">
+                <h5 id="viagemNome"></h5>
+                <p id="viagemDescricao"></p>
+                <p id="viagemPreco"></p>
+            </div>
+            <form id="reservaForm">
+                <input type="hidden" id="viagemId" value="" />
+                <div class="form-group">
+                    <label for="data">Data da Viagem:</label>
+                    <input
+                        type="date"
+                        class="form-control"
+                        id="data"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="quantidade">Quantidade de Pessoas:</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        id="quantidade"
+                        min="1"
+                        required
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    Reservar
+                </button>
+            </form>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", async function () {
+                // Captura o ID da viagem da URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const viagemId = urlParams.get("id");
+                document.getElementById("viagemId").value = viagemId;
+
+                // Obtém o usuário logado do localStorage
+                const usuario = JSON.parse(localStorage.getItem("usuario")); // Obtém o objeto do usuário
+                console.log("Usuário logado:", usuario); // Log do objeto usuário
+
+                // Buscar informações da viagem
+                try {
+                    const response = await fetch(
+                        `http://localhost:3000/api/produtos/${viagemId}`
+                    );
+                    if (!response.ok) {
+                        throw new Error("Erro ao buscar informações da viagem");
+                    }
+                    const viagem = await response.json();
+                    document.getElementById("viagemImagem").src = viagem.imagem;
+                    document.getElementById("viagemNome").textContent =
+                        viagem.nome;
+                    document.getElementById("viagemDescricao").textContent =
+                        viagem.descricao;
+                    document.getElementById(
+                        "viagemPreco"
+                    ).textContent = `Preço por pessoa: R$ ${viagem.preco}`;
+                } catch (error) {
+                    console.error(
+                        "Erro ao buscar informações da viagem:",
+                        error
+                    );
+                    alert(
+                        "Erro ao buscar informações da viagem. Tente novamente mais tarde."
+                    );
+                }
+
+                // Lidar com o envio do formulário
+                document
+                    .getElementById("reservaForm")
+                    .addEventListener("submit", async (event) => {
+                        event.preventDefault();
+                        const data = document.getElementById("data").value;
+                        const quantidade =
+                            document.getElementById("quantidade").value;
+
+                        // Verificar se os campos estão preenchidos
+                        if (!data || !quantidade || !usuario) {
+                            alert(
+                                "Por favor, preencha todos os campos e verifique se o usuário está logado."
+                            );
+                            return;
+                        }
+
+                        // Log dos dados que serão enviados
+                        console.log({
+                            usuario_id: usuario.id, // Use o ID do usuário logado
+                            produtos_id: viagemId, // Use o ID do produto
+                            data: data,
+                            quantidade_pessoas: quantidade,
+                        });
+
+                        try {
+                            const response = await fetch(
+                                "http://localhost:3000/api/reservas",
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        Authorization: `Bearer ${usuario.token}`, // Adicione o token do usuário
+                                    },
+                                    body: JSON.stringify({
+                                        usuario_id: usuario.id, // Use o ID do usuário logado
+                                        produtos_id: viagemId, // Use o ID do produto
+                                        data: data,
+                                        quantidade_pessoas: quantidade,
+                                    }),
+                                }
+                            );
+
+                            const result = await response.json();
+                            if (response.ok) {
+                                alert(result.message);
+                            } else {
+                                alert(result.error);
+                            }
+                        } catch (error) {
+                            console.error(
+                                "Erro ao enviar a solicitação:",
+                                error
+                            );
+                            alert(
+                                "Erro ao enviar a solicitação. Verifique o console para mais detalhes."
+                            );
+                        }
+                    });
+            });
+        </script>
+    </body>
+</html>
