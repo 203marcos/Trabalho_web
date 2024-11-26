@@ -5,16 +5,16 @@
             "src": "front/package.json",
             "use": "@vercel/static-build",
             "config": {
-                "distDir": "front/public"
+                "distDir": "front"
             }
         },
         {
-            "src": "back/api/**/*.js",
+            "src": "back/server.js",
             "use": "@vercel/node"
         }
     ],
     "routes": [
-        { "src": "/api/(.*)", "dest": "/back/api/$1" },
-        { "src": "/(.*)", "dest": "/front/public/$1" }
+        { "src": "/api/(.*)", "dest": "/back/server.js" },
+        { "src": "/(.*)", "dest": "/front/$1" }
     ]
 }
