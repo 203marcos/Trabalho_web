@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <title>Detalhes da Viagem</title>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h2 id="nomeViagem" class="text-center"></h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <img
+                        id="imagemViagem"
+                        src=""
+                        class="img-fluid"
+                        alt="Imagem da Viagem"
+                    />
+                </div>
+                <div class="col-md-6">
+                    <p id="descricaoViagem"></p>
+                    <p id="precoViagem"></p>
+                    <form id="formReserva">
+                        <div class="form-group">
+                            <label for="quantidadePessoas"
+                                >Quantidade de Pessoas</label
+                            >
+                            <input
+                                type="number"
+                                class="form-control"
+                                id="quantidadePessoas"
+                                required
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label for="dataReserva">Data da Reserva</label>
+                            <input
+                                type="date"
+                                class="form-control"
+                                id="dataReserva"
+                                required
+                            />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Reservar
+                        </button>
+                    </form>
+                    <div id="message" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <script type="module">
+            import API_URL from "./config.js";
+
+            document.addEventListener("DOMContentLoaded", async function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const viagemId = urlParams.get("id");
+
+                if (!viagemId) {
+                    alert("ID da viagem não fornecido.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(
+                        `${API_URL}/produtos/${viagemId}`
+                    );
+                    if (!response.ok) {
+                        throw new Error("Erro ao buscar detalhes da viagem");
+                    }
+                    const viagem = await response.json();
+
+                    document.getElementById("nomeViagem").textContent =
+                        viagem.nome;
+                    document.getElementById("descricaoViagem").textContent =
+                        viagem.descricao;
+                    document.getElementById(
+                        "precoViagem"
+                    ).textContent = `Preço: R$ ${viagem.preco}`;
+                    document.getElementById("imagemViagem").src = viagem.imagem;
+                } catch (error) {
+                    console.error("Erro ao buscar detalhes da viagem:", error);
+                }
+
+                document
+                    .getElementById("formReserva")
+                    .addEventListener("submit", async function (event) {
+                        event.preventDefault();
+
+                        const quantidadePessoas =
+                            document.getElementById("quantidadePessoas").value;
+                        const dataReserva =
+                            document.getElementById("dataReserva").value;
+                        const usuario = JSON.parse(
+                            localStorage.getItem("usuario")
+                        );
+
+                        if (!usuario) {
+                            alert(
+                                "Você precisa estar logado para fazer uma reserva."
+                            );
+                            return;
+                        }
+
+                        const reserva = {
+                            usuario_id: usuario.id,
+                            produtos_id: viagemId,
+                            data: dataReserva,
+                            quantidade_pessoas: quantidadePessoas,
+                        };
+
+                        try {
+                            const response = await fetch(
+                                `${API_URL}/reservas`,
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                        Authorization: `Bearer ${usuario.token}`,
+                                    },
+                                    body: JSON.stringify(reserva),
+                                }
+                            );
+
+                            const data = await response.json();
+                            const messageDiv =
+                                document.getElementById("message");
+
+                            if (response.ok) {
+                                messageDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                                document.getElementById("formReserva").reset();
+                            } else {
+                                messageDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                            }
+                        } catch (error) {
+                            console.error("Erro ao realizar reserva:", error);
+                            const messageDiv =
+                                document.getElementById("message");
+                            messageDiv.innerHTML = `<div class="alert alert-danger">Erro ao realizar reserva. Tente novamente mais tarde.</div>`;
+                        }
+                    });
+            });
+        </script>
+    </body>
+</html>

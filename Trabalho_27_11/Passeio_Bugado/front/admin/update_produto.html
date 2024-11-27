@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <title>Alterar Produto</title>
+        <style>
+            .card img {
+                height: 200px; /* Define uma altura fixa */
+                width: 100%; /* Faz a imagem ocupar toda a largura */
+                object-fit: cover; /* Ajusta a imagem para cobrir o espaço sem distorção */
+            }
+            .carousel-item .row {
+                display: flex;
+                justify-content: center; /* Centraliza os cards no slide */
+            }
+            .card {
+                text-align: center; /* Centraliza o texto dentro do card */
+                margin: 0 auto; /* Centraliza o card */
+            }
+            .carousel-item .card {
+                margin-bottom: 20px; /* Espaçamento entre os cards */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h2 class="text-center">Alterar Produto</h2>
+            <div
+                id="carrosselProdutos"
+                class="carousel slide"
+                data-ride="carousel"
+            >
+                <div class="carousel-inner" id="carouselItems">
+                    <!-- Os itens do carrossel serão inseridos aqui -->
+                </div>
+                <a
+                    class="carousel-control-prev"
+                    href="#carrosselProdutos"
+                    role="button"
+                    data-slide="prev"
+                >
+                    <span
+                        class="carousel-control-prev-icon"
+                        aria-hidden="true"
+                    ></span>
+                    <span class="sr-only">Anterior</span>
+                </a>
+                <a
+                    class="carousel-control-next"
+                    href="#carrosselProdutos"
+                    role="button"
+                    data-slide="next"
+                >
+                    <span
+                        class="carousel-control-next-icon"
+                        aria-hidden="true"
+                    ></span>
+                    <span class="sr-only">Próximo</span>
+                </a>
+            </div>
+            <div class="text-center mt-4">
+                <a href="../admin.html" class="btn btn-secondary"
+                    >Voltar para o admin</a
+                >
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script type="module">
+            import API_URL from "../config.js";
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+                if (!usuario || usuario.role !== "admin") {
+                    window.location.href = "../index.html";
+                }
+
+                async function fetchProdutos() {
+                    try {
+                        const response = await fetch(`${API_URL}/produtos`);
+                        if (!response.ok) {
+                            throw new Error("Erro ao buscar produtos");
+                        }
+                        const produtos = await response.json();
+
+                        const carouselItems =
+                            document.getElementById("carouselItems");
+                        let itemHTML = "";
+
+                        produtos.forEach((produto, index) => {
+                            if (index % 3 === 0) {
+                                if (index > 0) itemHTML += "</div></div>";
+                                itemHTML += `<div class="carousel-item ${
+                                    index === 0 ? "active" : ""
+                                }">
+                            <div class="row">`;
+                            }
+                            itemHTML += `
+                        <div class="col-md-4">
+                            <div class="card mb-4">
+                                <img src="${produto.imagem}" class="card-img-top" alt="${produto.nome}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${produto.nome}</h5>
+                                    <p class="card-text">${produto.descricao}</p>
+                                    <p class="card-text"><strong>Preço: R$ ${produto.preco}</strong></p>
+                                    <button class="btn btn-warning" onclick="abrirModalAlterarProduto('${produto.id}', '${produto.nome}', '${produto.descricao}', '${produto.preco}', '${produto.imagem}')">Alterar</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                        });
+
+                        if (produtos.length > 0) {
+                            itemHTML += "</div></div>";
+                        }
+
+                        carouselItems.innerHTML = itemHTML;
+                    } catch (error) {
+                        console.error("Erro ao buscar produtos:", error);
+                    }
+                }
+
+                window.abrirModalAlterarProduto = function (
+                    id,
+                    nome,
+                    descricao,
+                    preco,
+                    imagem
+                ) {
+                    const formHTML = `
+                <div class="modal fade" id="modalAlterarProduto" tabindex="-1" role="dialog" aria-labelledby="modalAlterarProdutoLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalAlterarProdutoLabel">Alterar Produto</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formAlterarProduto">
+                                    <div class="form-group">
+                                        <label for="nome">Nome</label>
+                                        <input type="text" class="form-control" id="nome" value="${nome}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="descricao">Descrição</label>
+                                        <textarea class="form-control" id="descricao" required>${descricao}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="preco">Preço</label>
+                                        <input type="number" class="form-control" id="preco" value="${preco}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="imagem">URL da Imagem</label>
+                                        <input type="text" class="form-control" id="imagem" value="${imagem}" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+                    document.body.insertAdjacentHTML("beforeend", formHTML);
+                    $("#modalAlterarProduto").modal("show");
+
+                    document.getElementById("formAlterarProduto").onsubmit =
+                        async function (event) {
+                            event.preventDefault();
+                            const novoNome =
+                                document.getElementById("nome").value;
+                            const novaDescricao =
+                                document.getElementById("descricao").value;
+                            const novoPreco =
+                                document.getElementById("preco").value;
+                            const novaImagem =
+                                document.getElementById("imagem").value;
+
+                            await alterarProduto(id, {
+                                nome: novoNome,
+                                descricao: novaDescricao,
+                                preco: novoPreco,
+                                imagem: novaImagem,
+                            });
+
+                            $("#modalAlterarProduto").modal("hide");
+                            fetchProdutos();
+                        };
+                };
+
+                async function alterarProduto(produtoId, dados) {
+                    try {
+                        const response = await fetch(
+                            `${API_URL}/produtos/${produtoId}`,
+                            {
+                                method: "PUT",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${usuario.token}`,
+                                },
+                                body: JSON.stringify(dados),
+                            }
+                        );
+
+                        if (response.ok) {
+                            alert("Produto alterado com sucesso!");
+                        } else {
+                            const data = await response.json();
+                            alert(`Erro ao alterar produto: ${data.error}`);
+                        }
+                    } catch (error) {
+                        console.error("Erro ao alterar produto:", error);
+                        alert("Erro ao alterar produto.");
+                    }
+                }
+
+                fetchProdutos();
+            });
+        </script>
+    </body>
+</html>

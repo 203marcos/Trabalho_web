@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <title>Reservas de Produtos</title>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h2 class="text-center">Reservas de Produtos</h2>
+            <div id="reservasContainer"></div>
+
+            <div class="text-center mt-4">
+                <a href="../admin.html" class="btn btn-secondary"
+                    >Voltar para o admin</a
+                >
+            </div>
+        </div>
+
+        <script type="module">
+            import API_URL from "../config.js";
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+                if (!usuario || usuario.role !== "admin") {
+                    window.location.href = "../index.html";
+                }
+
+                async function buscarReservas() {
+                    try {
+                        const response = await fetch(`${API_URL}/reservas`, {
+                            method: "GET",
+                            headers: {
+                                Authorization: `Bearer ${usuario.token}`,
+                            },
+                        });
+
+                        if (!response.ok) {
+                            throw new Error("Erro ao buscar reservas");
+                        }
+
+                        const reservas = await response.json();
+                        exibirReservas(reservas);
+                    } catch (error) {
+                        console.error("Erro ao buscar reservas:", error);
+                        alert(
+                            "Erro ao buscar reservas. Verifique o console para mais detalhes."
+                        );
+                    }
+                }
+
+                function exibirReservas(reservas) {
+                    const reservasContainer =
+                        document.getElementById("reservasContainer");
+                    const reservasPorMes = {};
+
+                    reservas.forEach((reserva) => {
+                        const mes = new Date(reserva.data).toLocaleString(
+                            "pt-BR",
+                            {
+                                month: "long",
+                                year: "numeric",
+                            }
+                        );
+                        if (!reservasPorMes[mes]) {
+                            reservasPorMes[mes] = [];
+                        }
+                        reservasPorMes[mes].push(reserva);
+                    });
+
+                    for (const mes in reservasPorMes) {
+                        const mesDiv = document.createElement("div");
+                        mesDiv.classList.add("mt-4");
+                        mesDiv.innerHTML = `<h4>${mes}</h4>`;
+                        reservasPorMes[mes].forEach((reserva) => {
+                            const dataFormatada = new Date(
+                                reserva.data
+                            ).toLocaleDateString("pt-BR");
+                            const reservaDiv = document.createElement("div");
+                            reservaDiv.classList.add("border", "p-2", "mb-2");
+                            reservaDiv.innerHTML = `
+                                Reserva ID: ${reserva.id}, 
+                                Usuário: ${reserva.usuario_nome}, 
+                                Email: ${reserva.usuario_email}, 
+                                Produto: ${reserva.produto_nome}, 
+                                Data: ${dataFormatada}, 
+                                Quantidade: ${reserva.quantidade_pessoas}, 
+                                Valor Total: R$ ${reserva.valor_total.toFixed(
+                                    2
+                                )}
+                            `;
+                            mesDiv.appendChild(reservaDiv);
+                        });
+                        reservasContainer.appendChild(mesDiv);
+                    }
+                }
+
+                buscarReservas();
+            });
+        </script>
+    </body>
+</html>
