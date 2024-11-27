@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "front/package.json",
+      "src": "front/index.html",
       "use": "@vercel/static-build"
     },
     {
