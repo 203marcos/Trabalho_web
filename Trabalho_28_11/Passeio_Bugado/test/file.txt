@@ -1,0 +1,41 @@
+Cypress nodejs
+npm install cypress --save-dev
+npx cypress open -> Abrir a interface gráfica
+
+cypress/
+	fixtures/ (dados para testes)
+	integration/ (onde ficam os testes)
+	plugins/ (plugin de configuração)
+	support/ (scripts auxiliares)
+	
+	teste Básico:
+	
+describe('Página Inicial', () => {
+  it('deve carregar corretamente', () => {
+    cy.visit('https://www.seusite.com') // Visita a URL da página
+    cy.get('h1').should('contain', 'Bem-vindo ao Seu Site') // Verifica se a tag h1 contém o texto esperado
+  })
+})
+
+
+RODAR TESTE 
+npx cypress run
+
+Preencher Formulario:
+cy.get('input[name="nome"]').type('João') // Preenche um campo de nome
+cy.get('input[name="email"]').type('joao@exemplo.com') // Preenche um campo de e-mail
+cy.get('button[type="submit"]').click() // Clica no botão de submit
+
+
+ALERTS
+cy.on('window:alert', (text) => {
+  expect(text).to.contains('Obrigado pelo cadastro!') // Verifica o texto do alerta
+})
+
+Validar se um elemento está visível:
+
+javascript
+cy.get('.produto').should('be.visible') // Verifica se o elemento está visível
+
+3
+

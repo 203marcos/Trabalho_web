@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        />
+        <title>Login</title>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h2 class="text-center">Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        class="form-control"
+                        id="email"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="senha"
+                        required
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <div id="message" class="mt-3"></div>
+        </div>
+
+        <script type="module">
+            import API_URL from "./config.js";
+
+            document
+                .getElementById("loginForm")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const email = document.getElementById("email").value;
+                    const senha = document.getElementById("senha").value;
+
+                    try {
+                        const response = await fetch(
+                            `${API_URL}/usuarios/login`,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ email, senha }),
+                            }
+                        );
+
+                        const data = await response.json();
+                        const messageDiv = document.getElementById("message");
+
+                        if (response.ok) {
+                            messageDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                            const usuario = {
+                                nome: data.nome,
+                                email: data.email,
+                                role: data.role,
+                                token: data.token,
+                                id: data.id,
+                            };
+                            localStorage.setItem(
+                                "usuario",
+                                JSON.stringify(usuario)
+                            );
+                            if (data.role === "admin") {
+                                window.location.href = "admin.html";
+                            } else {
+                                window.location.href = "index.html";
+                            }
+                        } else {
+                            messageDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                        }
+                    } catch (error) {
+                        console.error("Erro:", error);
+                        const messageDiv = document.getElementById("message");
+                        messageDiv.innerHTML = `<div class="alert alert-danger">Erro ao fazer login. Tente novamente mais tarde.</div>`;
+                    }
+                });
+        </script>
+    </body>
+</html>
